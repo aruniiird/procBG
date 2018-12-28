@@ -18,33 +18,27 @@ var (
 	logFlags = log.LstdFlags | log.Lshortfile
 )
 
-func init() {
-	flag.StringVar(&outF, "out", "", "Command's output file")
-	flag.StringVar(&errF, "err", "", "Command's error output file")
-}
-
-func checkOutFiles(outF, errF string) error {
+func setOutErrFiles(outF, errF string) (stdOut, stdErr io.Writer, err error) {
 	if outF == "" && errF == "" {
 		stdOut = ioutil.Discard
 		stdErr = ioutil.Discard
-		return nil
+		return
 	}
 	if outF != "" && errF == "" {
 		errF = outF
 	} else if errF != "" && outF == "" {
 		outF = errF
 	}
-	var err error
 	stdOut, err = os.Create(outF)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	if outF != errF {
 		stdErr, err = os.Create(errF)
 	} else {
 		stdErr = stdOut
 	}
-	return err
+	return
 }
 
 func initLog() {
@@ -59,11 +53,16 @@ func initLogWithFiles(stdO, stdE io.Writer) {
 	logE = log.New(errW, "", logFlags)
 }
 
+func init() {
+	flag.StringVar(&outF, "out", "", "Command's output file")
+	flag.StringVar(&errF, "err", "", "Command's error output file")
+	initLog()
+}
+
 func main() {
 	flag.Parse()
-	err := checkOutFiles(outF, errF)
+	stdOut, stdErr, err := setOutErrFiles(outF, errF)
 	if err != nil {
-		initLog()
 		logE.Fatalln("Error:", err)
 	}
 	initLogWithFiles(stdOut, stdErr)
