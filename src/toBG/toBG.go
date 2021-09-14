@@ -49,9 +49,6 @@ func initLog() {
 }
 
 func initLogWithFiles(stdO, stdE io.Writer) {
-	if !verbose {
-		return
-	}
 	outW := io.MultiWriter(os.Stdout, stdO)
 	errW := io.MultiWriter(os.Stderr, stdE)
 	logO = log.New(outW, "", logFlags)
