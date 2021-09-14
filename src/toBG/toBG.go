@@ -77,6 +77,9 @@ func main() {
 		logE.Fatalln("Error:", err)
 	}
 	initLogWithFiles(stdOut, stdErr)
+	if len(flag.Args()) == 0 {
+		logE.Fatal("No command provided to execute.")
+	}
 	mainCmdStr := flag.Args()[0]
 	otherArgs := flag.Args()[1:]
 	if mCmd, err := exec.LookPath(mainCmdStr); err == nil {
