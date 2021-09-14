@@ -33,17 +33,20 @@ func setOutErrFiles(outF, errF string) (stdOut, stdErr io.Writer, err error) {
 		stdErr = ioutil.Discard
 		return
 	}
-	if outF != "" && errF == "" {
+	if errF == "" {
 		errF = outF
-	} else if errF != "" && outF == "" {
-		outF = errF
 	}
-	stdOut, err = os.Create(outF)
-	if err != nil {
-		return nil, nil, err
+	if outF == "" {
+		stdOut = ioutil.Discard
+	} else {
+		if stdOut, err = os.Create(errF); err != nil {
+			return nil, nil, err
+		}
 	}
-	if outF != errF {
-		stdErr, err = os.Create(errF)
+	if errF != outF {
+		if stdErr, err = os.Create(errF); err != nil {
+			return nil, nil, err
+		}
 	} else {
 		stdErr = stdOut
 	}
