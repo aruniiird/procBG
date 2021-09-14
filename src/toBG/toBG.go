@@ -28,14 +28,6 @@ var (
 )
 
 func setOutErrFiles(outF, errF string) (stdOut, stdErr io.Writer, err error) {
-	if outF == "" && errF == "" {
-		stdOut = ioutil.Discard
-		stdErr = ioutil.Discard
-		return
-	}
-	if errF == "" {
-		errF = outF
-	}
 	if outF == "" {
 		stdOut = ioutil.Discard
 	} else {
@@ -43,12 +35,12 @@ func setOutErrFiles(outF, errF string) (stdOut, stdErr io.Writer, err error) {
 			return nil, nil, err
 		}
 	}
-	if errF != outF {
+	if errF == "" || errF == outF {
+		stdErr = stdOut
+	} else {
 		if stdErr, err = os.Create(errF); err != nil {
 			return nil, nil, err
 		}
-	} else {
-		stdErr = stdOut
 	}
 	return
 }
