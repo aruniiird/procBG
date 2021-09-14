@@ -19,8 +19,6 @@ const (
 var (
 	outF     string
 	errF     string
-	stdOut   io.Writer
-	stdErr   io.Writer
 	logO     *log.Logger
 	logE     *log.Logger
 	logFlags = 0
