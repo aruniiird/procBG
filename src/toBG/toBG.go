@@ -84,6 +84,12 @@ func main() {
 	mainCmd.Stdout = stdOut
 	mainCmd.Stderr = stdErr
 	if verbose {
+		msgErrF := errF
+		if msgErrF == "" {
+			msgErrF = "(errors will be put into the output file)"
+		}
+		logO.Println("Output file     : ", outF)
+		logO.Println("Error file      : ", msgErrF)
 		logO.Println("Main Command    : ", mainCmdStr)
 		logO.Println("Other Arguments : ", otherArgs)
 		logO.Println("Arguments Length: ", len(otherArgs))
@@ -92,5 +98,9 @@ func main() {
 		logE.Println("Failed to start the command: ", err)
 		os.Exit(1)
 	}
-	logO.Println(mainCmd.Process.Pid)
+	if verbose {
+		logO.Println("Process ID      : ", mainCmd.Process.Pid)
+	} else {
+		logO.Println(mainCmd.Process.Pid)
+	}
 }
