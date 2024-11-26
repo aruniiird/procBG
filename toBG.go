@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -27,7 +26,7 @@ var (
 
 func setOutErrFiles(outF, errF string) (stdOut, stdErr io.Writer, err error) {
 	if outF == "" {
-		stdOut = ioutil.Discard
+		stdOut = io.Discard
 	} else {
 		if stdOut, err = os.Create(outF); err != nil {
 			return nil, nil, err
